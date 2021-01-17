@@ -31,11 +31,12 @@ class UserFixtures extends Fixture
         $admin->setLastName($lastName);
         $admin->setRoles(['ROLE_ADMIN']);
         $admin->setEmail($email);
-        $admin->setCreatedAt(new \DateTime('NOW'));;
+        $admin->setCreatedAt(new \DateTime('NOW'));
         $admin->setPassword($this->passwordEncoder->encodePassword(
             $admin,
             $password
         ));
+        $admin->setLibrary($this->getReference('library_' . 1));
 
         $manager->persist($admin);
 

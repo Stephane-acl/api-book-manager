@@ -7,10 +7,17 @@ namespace App\DataFixtures;
 use App\Entity\Book;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class BookFixtures extends Fixture
+class BookFixtures extends Fixture implements DependentFixtureInterface
 {
+
+    public function getDependencies(): array
+    {
+        return [LibraryFixtures::class];
+    }
+
     const BOOKS = [
         'Cendres vives' => [
 
@@ -108,7 +115,8 @@ class BookFixtures extends Fixture
                 ->setCreatedAt(new DateTime('NOW'))
                 ->setUpdatedAt(new DateTime('NOW'))
                 ->setIsAvailable($availability)
-                ->setImage($data["image"]);
+                ->setImage($data["image"])
+                ->setLibrary($this->getReference("library_" . 1));
 
             $this->addReference("book_" . $i, $book);
             $manager->persist($book);
