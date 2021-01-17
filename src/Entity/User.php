@@ -2,12 +2,23 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ApiResource(
+ *     normalizationContext={"groups"={"users_read"}}
+ * )
+ * @ApiFilter(SearchFilter::class, properties={"email"})
+ * @UniqueEntity("email", message="A user with this email already exist")
  */
 class User implements UserInterface
 {
@@ -15,39 +26,60 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"users_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"users_read", "get_libraries"})
+     * @Assert\Email(message="The format of email must be valid")
+     * @Assert\NotBlank(message="The email of the user is required")
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
+     * @Groups({"users_read"})
      */
     private $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="password of the user is required")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"users_read", "get_libraries"})
+     * @Assert\NotBlank(message="firstName of the user is required")
+     * @Assert\Length(min=3, minMessage="The firstName must have between 3 and 255 characters", max=255, *
+     *     maxMessage="The firstName must have between 3 and 255 characters")
      */
     private $firstName;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"users_read", "get_libraries"})
+     * @Assert\NotBlank(message="lastName of the user is required")
+     * @Assert\Length(min=3, minMessage="The lastName must have between 3 and 255 characters", max=255, *
+     *     maxMessage="The lastName must have between 3 and 255 characters")
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"users_read", "get_libraries"})
+     * @Assert\NotBlank(message="The date must have the format YYYY-MM-DD")
      */
     private $createdAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Library::class, inversedBy="user")
+     */
+    private $library;
 
     public function getId(): ?int
     {
@@ -159,6 +191,18 @@ class User implements UserInterface
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getLibrary(): ?Library
+    {
+        return $this->library;
+    }
+
+    public function setLibrary(?Library $library): self
+    {
+        $this->library = $library;
 
         return $this;
     }
