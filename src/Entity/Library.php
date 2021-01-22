@@ -20,15 +20,21 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "method"="GET",
  *              "normalization_context"={
  *                  "groups"={"get_libraries"}
- *              }},
- *          "POST"},
+ *              }
+ *           },
+ *          "POST"
+ *       },
  *     itemOperations={
  *          "GET"={
  *              "method"="GET",
  *              "normalization_context"={
  *                  "groups"={"get_library"}
- *              }}, "PUT", "DELETE"},
- * attributes={"pagination_client_enabled"=false},
+ *              }
+ *            },
+ *     "PUT",
+ *     "DELETE"
+ *   },
+ *  attributes={"pagination_client_enabled"=false},
  * )
  * @ApiFilter(SearchFilter::class, properties={"label":"partial"})
  */
@@ -44,7 +50,7 @@ class Library
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_library", "get_libraries", "get_books"})
+     * @Groups({"get_library", "get_libraries", "get_book"})
      * @Assert\NotBlank(message="Label of the library is required")
      * @Assert\Length(min=3, minMessage="The label must have between 3 and 255 characters", max=255, *
      *     maxMessage="The label must have between 3 and 255 characters")
@@ -53,25 +59,25 @@ class Library
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_library", "get_libraries", "get_books"})
+     * @Groups({"get_library", "get_libraries", "get_book"})
      */
     private $address;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_library", "get_libraries", "get_books"})
+     * @Groups({"get_library", "get_libraries", "get_book"})
      */
     private $cpo;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_library", "get_libraries", "get_books"})
+     * @Groups({"get_library", "get_libraries", "get_book"})
      */
     private $city;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"get_library", "get_libraries", "get_books"})
+     * @Groups({"get_library", "get_libraries", "get_book"})
      */
     private $logo;
 

@@ -9,6 +9,7 @@ use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class BookFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -100,9 +101,25 @@ class BookFixtures extends Fixture implements DependentFixtureInterface
     {
         //Création de Livres
 
-        $available = ['true', 'false'];
-        $availability = $available[rand(0, 1)];
-        $i = 0;
+        $faker = Factory::create('fr_FR');
+
+        for ($i = 0; $i < 95; $i++) {
+            $book = new Book();
+            $book
+                ->setTitle($faker->title)
+                ->setLanguage($faker->languageCode)
+                ->setDescription($faker->text)
+                ->setNbrPages($faker->randomDigit)
+                ->setDateOfPublication(new DateTime('10-03-2020'))
+                ->setCreatedAt(new DateTime('NOW'))
+                ->setUpdatedAt(new DateTime('NOW'))
+                ->setIsAvailable(rand(0, 1))
+                ->setImage($faker->imageUrl(350, 350))
+                ->setLibrary($this->getReference("library_" . 1));
+
+            $this->addReference("book_" . $i, $book);
+            $manager->persist($book);
+        }
 
         foreach (self::BOOKS as $title => $data) {
             $book = new Book();
@@ -114,7 +131,7 @@ class BookFixtures extends Fixture implements DependentFixtureInterface
                 ->setDateOfPublication(new DateTime('10-03-2020'))
                 ->setCreatedAt(new DateTime('NOW'))
                 ->setUpdatedAt(new DateTime('NOW'))
-                ->setIsAvailable($availability)
+                ->setIsAvailable(rand(0, 1))
                 ->setImage($data["image"])
                 ->setLibrary($this->getReference("library_" . 1));
 
@@ -122,6 +139,8 @@ class BookFixtures extends Fixture implements DependentFixtureInterface
             $manager->persist($book);
             $i++;
         }
+
+
         $manager->flush();
     }
 }

@@ -72,7 +72,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="datetime")
      * @Groups({"users_read", "get_libraries"})
-     * @Assert\NotBlank(message="The date must have the format YYYY-MM-DD")
+     * @Assert\Type( type = "\DateTime",message="The format must be YYYY-MM-DD")
      */
     private $createdAt;
 

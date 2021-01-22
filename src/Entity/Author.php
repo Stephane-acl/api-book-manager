@@ -31,32 +31,32 @@ class Author
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_authors", "get_books"})
+     * @Groups({"get_authors", "get_book", "get_books"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_authors", "get_books"})
+     * @Groups({"get_authors", "get_book", "get_books"})
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"get_authors", "get_books"})
+     * @Groups({"get_authors", "get_book", "get_books"})
      */
     private $dateOfBirth;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_authors", "get_books"})
+     * @Groups({"get_authors", "get_book", "get_books"})
      */
     private $nationality;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"get_authors", "get_books"})
-     * @Assert\NotBlank(message="The date must have the format YYYY-MM-DD")
+     * @Groups({"get_authors", "get_book", "get_books"})
+     * @Assert\Type( type = "\DateTime",message="The format must be YYYY-MM-DD")
      */
     private $createdAt;
 

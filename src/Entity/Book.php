@@ -17,9 +17,19 @@ use Symfony\Component\Validator\Constraints as Assert;
  *   attributes = {
  *       "order": {"dateOfPublication":"desc"}
  *   },
- *   normalizationContext={"groups"={"get_books"}},
+ *
  *     collectionOperations={"GET", "POST"},
- *     itemOperations={"GET", "PUT"}
+ *     itemOperations={
+ *          "GET"={
+ *              "method"="GET",
+ *              "normalization_context"={
+ *                  "groups"={"get_book"}
+ *              }
+ *           },
+ *          "PUT"
+ *   },
+ *     normalizationContext={"groups"={"get_books"}},
+ *     denormalizationContext={"disable_type_enforcement"=true}
  * )
  * @ApiFilter(SearchFilter::class, properties={"title":"partial"})
  * @ApiFilter(OrderFilter::class)
@@ -30,13 +40,13 @@ class Book
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_books"})
+     * @Groups({"get_book", "get_books"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_books", "get_authors", "get_libraries"})
+     * @Groups({"get_book", "get_books", "get_authors", "get_libraries"})
      * @Assert\NotBlank(message="Title of the book is required")
      * @Assert\Length(min=3, minMessage="The title must have between 3 and 255 characters", max=255, *
      *     maxMessage="The title must have between 3 and 255 characters")
@@ -45,73 +55,73 @@ class Book
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
-     * @Groups({"get_books", "get_libraries"})
+     * @Groups({"get_book", "get_books", "get_libraries"})
      */
     private $language;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"get_books"})
-     * @Assert\Type("\DateTimeInterface", message="The format must be YYYY-MM-DD")
+     * @Groups({"get_book", "get_books"})
+     * @Assert\Type( type = "\DateTime",message="The format must be YYYY-MM-DD")
      */
     private $dateOfPublication;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"get_books"})
+     * @Groups({"get_book", "get_books"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"get_books", "get_libraries"})
+     * @Groups({"get_book", "get_books", "get_libraries"})
      * @Assert\Type(type="numeric", message="The number of pages must be numeric")
      */
     private $nbrPages;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_books", "get_authors"})
+     * @Groups({"get_book", "get_books", "get_authors"})
      */
     private $image;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"get_books", "get_libraries"})
+     * @Groups({"get_book", "get_books", "get_libraries"})
      * @Assert\NotBlank(message="Availability of the book is required")
      */
     private $isAvailable;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"get_books"})
+     * @Groups({"get_book", "get_books"})
      * @Assert\NotBlank(message="created date of the book is required")
-     * @Assert\Type("\DateTimeInterface", message="The format must be YYYY-MM-DD")
+     * @Assert\Type( type = "\DateTime",message="The format must be YYYY-MM-DD")
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"get_books"})
-     * @Assert\Type("\DateTimeInterface", message="The format must be YYYY-MM-DD")
+     * @Groups({"get_book", "get_books"})
+     * @Assert\Type( type = "\DateTime",message="The format must be YYYY-MM-DD")
      */
     private $updatedAt;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="book")
-     * @Groups({"get_books"})
+     * @Groups({"get_book", "get_books"})
      */
     private $category;
 
     /**
      * @ORM\ManyToOne(targetEntity=Author::class, inversedBy="book")
-     * @Groups({"get_books"})
+     * @Groups({"get_book", "get_books"})
      */
     private $author;
 
     /**
      * @ORM\ManyToOne(targetEntity=Library::class, inversedBy="book")
-     * @Groups({"get_books"})
+     * @Groups({"get_book", "get_books"})
      * @Assert\NotBlank(message="A library is required")
      */
     private $library;
@@ -150,7 +160,7 @@ class Book
         return $this->dateOfPublication;
     }
 
-    public function setDateOfPublication(?\DateTimeInterface $dateOfPublication): self
+    public function setDateOfPublication ($dateOfPublication): self
     {
         $this->dateOfPublication = $dateOfPublication;
 
@@ -174,7 +184,7 @@ class Book
         return $this->nbrPages;
     }
 
-    public function setNbrPages(?int $nbrPages): self
+    public function setNbrPages($nbrPages): self
     {
         $this->nbrPages = $nbrPages;
 
@@ -210,7 +220,7 @@ class Book
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt($createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -222,7 +232,7 @@ class Book
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt($updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 

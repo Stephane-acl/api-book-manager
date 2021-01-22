@@ -35,6 +35,7 @@ class InformationsToRequestSubscriber implements EventSubscriberInterface
 
         $entity_methods = get_class_methods($entity);
 
+        if ($entity_methods)
         $instance = str_replace("App\Entity\\", "", get_class($entity));
 
         if (!is_object($entity) || $method === "GET")
@@ -51,7 +52,9 @@ class InformationsToRequestSubscriber implements EventSubscriberInterface
                         break;
 
                     case "setCreatedAt":
-                        $entity->setCreatedAt(new DateTime());
+                        if (empty($entity->getCreatedAt())) {
+                            $entity->setCreatedAt(new DateTime());
+                        }
                         break;
                 }
             }
@@ -67,7 +70,9 @@ class InformationsToRequestSubscriber implements EventSubscriberInterface
             foreach ($entity_methods as $value) {
                 switch ($value) {
                     case "setUpdatedAt":
-                        $entity->setUpdatedAt(new DateTime());
+                        if (empty($entity->getUpdatedAt())) {
+                            $entity->setUpdatedAt(new DateTime());
+                        }
                         break;
                 }
             }

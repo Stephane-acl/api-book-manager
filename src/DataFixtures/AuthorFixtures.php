@@ -8,6 +8,7 @@ use App\Entity\Author;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 
 class AuthorFixtures extends Fixture implements DependentFixtureInterface
@@ -41,6 +42,23 @@ class AuthorFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager)
     {
+
+        // Création des auteurs
+
+        $faker = Factory::create('fr_FR');
+
+        for ($i = 0; $i < 95; $i++) {
+            $author = new Author();
+            $author
+                ->setFirstName($faker->firstName)
+                ->setLastName($faker->lastName)
+                ->setNationality('FR')
+                ->setDateOfBirth(new \DateTime('NOW'))
+                ->setCreatedAt(new \DateTime('NOW'))
+                ->addBook($this->getReference("book_" . $i));
+            $manager->persist($author);
+            $manager->persist($author);
+        }
 
         foreach (self::AUTHORS as $firstName => $data) {
             $author = new Author();
