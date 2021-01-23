@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass=BookRepository::class)
  * @ApiResource(
  *   attributes = {
- *       "order": {"dateOfPublication":"desc"}
+ *       "order": {"createdAt":"desc"}
  *   },
  *
  *     collectionOperations={"GET", "POST"},
@@ -40,16 +40,16 @@ class Book
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_book", "get_books"})
+     * @Groups({"get_book", "get_books", "get_authors"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"get_book", "get_books", "get_authors", "get_libraries"})
-     * @Assert\NotBlank(message="Title of the book is required")
-     * @Assert\Length(min=3, minMessage="The title must have between 3 and 255 characters", max=255, *
-     *     maxMessage="The title must have between 3 and 255 characters")
+     * @Assert\Length(min=3, minMessage="Le titre doit avoir au minimum 3 caractères",
+     *     max=255, maxMessage="Le titre doit avoir au maximum 255 caractères")
+     * @Assert\NotBlank(message="Le titre du livre est obligatoire")
      */
     private $title;
 
@@ -75,7 +75,6 @@ class Book
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @Groups({"get_book", "get_books", "get_libraries"})
-     * @Assert\Type(type="numeric", message="The number of pages must be numeric")
      */
     private $nbrPages;
 
@@ -88,7 +87,7 @@ class Book
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"get_book", "get_books", "get_libraries"})
-     * @Assert\NotBlank(message="Availability of the book is required")
+     * @Assert\NotBlank(message="La disponibilité du livre est obligatoire")
      */
     private $isAvailable;
 
@@ -101,7 +100,7 @@ class Book
     private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      * @Groups({"get_book", "get_books"})
      * @Assert\Type( type = "\DateTime",message="The format must be YYYY-MM-DD")
      */

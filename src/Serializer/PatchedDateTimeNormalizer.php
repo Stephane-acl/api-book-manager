@@ -89,8 +89,7 @@ class PatchedDateTimeNormalizer implements NormalizerInterface, DenormalizerInte
         $timezone = $this->getTimezone($context);
 
         if ('' === $data || null === $data) {
-            //return null;
-            throw new NotNormalizableValueException('The data is either an empty string or null, you should pass a string that can be parsed with the passed format or a valid DateTime string.');
+            return null;
         }
 
         if (null !== $dateTimeFormat) {

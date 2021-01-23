@@ -15,7 +15,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=AuthorRepository::class)
  * @ApiResource(
- *     normalizationContext={"groups"={"get_authors"}}
+ *     normalizationContext={"groups"={"get_authors"}},
+ *     attributes = {
+ *       "order": {"createdAt":"desc"}
+ *    },
  * )
  * @ApiFilter(SearchFilter::class, properties={"firstName":"partial","lastName":"partial"})
  */
@@ -25,19 +28,25 @@ class Author
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_authors"})
+     * @Groups({"get_authors", "get_book", "get_books"})
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
      * @Groups({"get_authors", "get_book", "get_books"})
+     * @Assert\Length(min="3", minMessage="Le prénom de l'auteur doit faire au minimum 3 caractères", max="255",
+     *     maxMessage="Le prénom de l'auteur doit faire au maximum 255 caractères")
+     * @Assert\NotBlank(message="Le prénom de l'auteur est obligatoire")
      */
     private $firstName;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
      * @Groups({"get_authors", "get_book", "get_books"})
+     * @Assert\Length(min="3", minMessage="Le nom de l'auteur doit faire au minimum 3 caractères", max="255",
+     *     maxMessage="Le nom de l'auteur doit faire au maximum 255 caractères")
+     * @Assert\NotBlank(message="Le nom de l'auteur est obligatoire")
      */
     private $lastName;
 
@@ -48,8 +57,11 @@ class Author
     private $dateOfBirth;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
      * @Groups({"get_authors", "get_book", "get_books"})
+     * @Assert\Length(min="2", minMessage="La nationnalité de l'auteur doit faire au minimum 2 caractères", max="255",
+     *     maxMessage="La nationnalité de l'auteur doit faire au maximum 255 caractères")
+     * @Assert\NotBlank(message="La nationnalité de l'auteur est obligatoire")
      */
     private $nationality;
 
