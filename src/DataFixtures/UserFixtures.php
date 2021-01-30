@@ -29,7 +29,7 @@ class UserFixtures extends Fixture
 
         $admin->setFirstName($firstName);
         $admin->setLastName($lastName);
-        $admin->setRoles(['ROLE_ADMIN']);
+        $admin->setRoles(['ROLE_MANAGER']);
         $admin->setEmail($email);
         $admin->setCreatedAt(new \DateTime('NOW'));
         $admin->setPassword($this->passwordEncoder->encodePassword(
