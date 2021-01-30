@@ -43,21 +43,27 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
 
             if ($resourceClass === Library::class) {
                 $queryBuilder->andWhere(":user MEMBER OF $rootAlias.user");
+                $queryBuilder->setParameter("user", $user);
             } elseif ($resourceClass === Book::class) {
                 $queryBuilder
                     ->join("$rootAlias.library", "l")
                     ->andWhere(":user MEMBER OF l.user");
+                $queryBuilder->setParameter("user", $user);
             } elseif ($resourceClass === Author::class || $resourceClass === Category::class) {
                 $queryBuilder
                     ->join("$rootAlias.book", "b")
                     ->leftJoin("b.library", "l")
                     ->andWhere(":user MEMBER OF l.user");
-            } elseif ($resourceClass === User::class) {
+                $queryBuilder->setParameter("user", $user);
+            } else if ($resourceClass === User::class) {
+                $queryBuilder->andWhere("$rootAlias.id = :user_id");
+                $queryBuilder->setParameter("user_id", $user->getId());
+            } else {
                 $queryBuilder
-                    ->andWhere("$rootAlias = :user");
+                    ->join("$rootAlias.user", "u")
+                    ->andWhere("u.id = :user_id");
+                $queryBuilder->setParameter("user_id", $user->getId());
             }
-
-            $queryBuilder->setParameter("user", $user);
         }
     }
 

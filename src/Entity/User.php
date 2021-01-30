@@ -78,6 +78,7 @@ class User implements UserInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Library::class, inversedBy="user")
+     * @Groups({"users_read"})
      */
     private $library;
 

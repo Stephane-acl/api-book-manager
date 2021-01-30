@@ -9,9 +9,13 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     normalizationContext={"groups"={"get_categories"}},
+ * )
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
  * @ApiFilter(SearchFilter::class, properties={"name":"partial"})
  */
@@ -21,11 +25,16 @@ class Category
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get_categories","get_book", "get_books"})
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="La catégorie est obligatoire")
+     * @Assert\Length(min=3, minMessage="La catégorie doit avoir au minimum 3 caractères",
+     *     max=255, maxMessage="La catégorie doit avoir au maximum 255 caractères")
+     * @Groups({"get_categories", "get_book","get_books"})
      */
     private $name;
 

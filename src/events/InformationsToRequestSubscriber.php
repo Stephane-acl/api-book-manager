@@ -3,7 +3,6 @@
 
 namespace App\events;
 
-use App\Entity\User;
 use ApiPlatform\Core\EventListener\EventPriorities;
 use DateTime;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -35,20 +34,19 @@ class InformationsToRequestSubscriber implements EventSubscriberInterface
 
         $entity_methods = get_class_methods($entity);
 
-        if ($entity_methods)
-        $instance = str_replace("App\Entity\\", "", get_class($entity));
-
         if (!is_object($entity) || $method === "GET")
             return;
 
-        if ($method === "POST") {
+        // $instance = str_replace("App\Entity\\", "", get_class($entity));
 
+        if ($method === "POST") {
             foreach ($entity_methods as $value) {
 
                 switch ($value) {
                     case 'setLibrary':
-                        if ($user instanceof User)
-                            $entity->setLibrary($user->getLibrary());
+                        //Set the library id of the current user
+                        if (in_array("ROLE_MANAGER", $user->getRoles()))
+                        $entity->setLibrary($user->getLibrary());
                         break;
 
                     case "setCreatedAt":
@@ -57,13 +55,6 @@ class InformationsToRequestSubscriber implements EventSubscriberInterface
                         }
                         break;
                 }
-            }
-
-            switch ($instance) {
-                // Set User who is creating a library
-                case 'Library':
-                    $entity->addUser($user);
-                    break;
             }
         }
         if ($method === "PUT") {

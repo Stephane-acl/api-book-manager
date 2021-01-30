@@ -31,7 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     normalizationContext={"groups"={"get_books"}},
  *     denormalizationContext={"disable_type_enforcement"=true}
  * )
- * @ApiFilter(SearchFilter::class, properties={"title":"partial"})
+ * @ApiFilter(SearchFilter::class, properties={"title":"partial", "isAvailable":"exact"})
  * @ApiFilter(OrderFilter::class)
  */
 class Book
@@ -87,7 +87,7 @@ class Book
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"get_book", "get_books", "get_libraries"})
-     * @Assert\NotBlank(message="La disponibilité du livre est obligatoire")
+     * @Assert\NotNull(message="La disponibilité du livre est obligatoire")
      */
     private $isAvailable;
 

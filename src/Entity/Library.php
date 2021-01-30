@@ -44,13 +44,13 @@ class Library
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_library", "get_libraries"})
+     * @Groups({"get_library", "get_libraries", "users_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_library", "get_libraries", "get_book"})
+     * @Groups({"get_library", "get_libraries", "get_book", "users_read"})
      * @Assert\NotBlank(message="Label of the library is required")
      * @Assert\Length(min=3, minMessage="The label must have between 3 and 255 characters", max=255, *
      *     maxMessage="The label must have between 3 and 255 characters")
@@ -59,19 +59,19 @@ class Library
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_library", "get_libraries", "get_book"})
+     * @Groups({"get_library", "get_libraries", "get_book", "users_read"})
      */
     private $address;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_library", "get_libraries", "get_book"})
+     * @Groups({"get_library", "get_libraries", "get_book", "users_read"})
      */
     private $cpo;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_library", "get_libraries", "get_book"})
+     * @Groups({"get_library", "get_libraries", "get_book", "users_read"})
      */
     private $city;
 
