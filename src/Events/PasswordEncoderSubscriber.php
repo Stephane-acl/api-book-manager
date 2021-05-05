@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\events;
+namespace App\Events;
 
 
 use ApiPlatform\Core\EventListener\EventPriorities;

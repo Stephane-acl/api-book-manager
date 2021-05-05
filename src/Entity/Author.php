@@ -78,6 +78,11 @@ class Author
      */
     private $book;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Library::class, inversedBy="authors")
+     */
+    private $library;
+
     public function __construct()
     {
         $this->book = new ArrayCollection();
@@ -187,6 +192,18 @@ class Author
                 $book->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLibrary(): ?Library
+    {
+        return $this->library;
+    }
+
+    public function setLibrary(?Library $library): self
+    {
+        $this->library = $library;
 
         return $this;
     }

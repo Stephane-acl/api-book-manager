@@ -14,6 +14,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
+ *   attributes = {
+ *       "order": {"createdAt":"desc"}
+ *   },
  *     normalizationContext={"groups"={"get_categories"}},
  * )
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
@@ -40,8 +43,19 @@ class Category
 
     /**
      * @ORM\OneToMany(targetEntity=Book::class, mappedBy="category")
+     * @Groups({"get_categories"})
      */
     private $book;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Library::class, inversedBy="categories")
+     */
+    private $library;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdAt;
 
     public function __construct()
     {
@@ -91,6 +105,30 @@ class Category
                 $book->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLibrary(): ?Library
+    {
+        return $this->library;
+    }
+
+    public function setLibrary(?Library $library): self
+    {
+        $this->library = $library;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

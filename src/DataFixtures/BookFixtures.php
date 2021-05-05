@@ -103,25 +103,25 @@ class BookFixtures extends Fixture implements DependentFixtureInterface
 
         $i = 0;
 
-      //  $faker = Factory::create('fr_FR');
-//
-      //  for ($i = 0; $i < 95; $i++) {
-      //      $book = new Book();
-      //      $book
-      //          ->setTitle($faker->title)
-      //          ->setLanguage($faker->languageCode)
-      //          ->setDescription($faker->text)
-      //          ->setNbrPages($faker->randomDigit)
-      //          ->setDateOfPublication(new DateTime('10-03-2020'))
-      //          ->setCreatedAt(new DateTime('NOW'))
-      //          ->setUpdatedAt(new DateTime('NOW'))
-      //          ->setIsAvailable(rand(0, 1))
-      //          ->setImage($faker->imageUrl(350, 350))
-      //          ->setLibrary($this->getReference("library_" . 1));
-//
-      //      $this->addReference("book_" . $i, $book);
-      //      $manager->persist($book);
-      //  }
+  $faker = Factory::create('fr_FR');
+
+  for ($i = 0; $i < 95; $i++) {
+      $book = new Book();
+      $book
+          ->setTitle($faker->title)
+          ->setLanguage($faker->languageCode)
+          ->setDescription($faker->text)
+          ->setNbrPages($faker->randomDigit)
+          ->setDateOfPublication(new DateTime('10-03-2020'))
+          ->setCreatedAt(new DateTime('NOW'))
+          ->setUpdatedAt(new DateTime('NOW'))
+          ->setIsAvailable(rand(0, 1))
+          ->setImage("https://www.lafinancepourtous.com/wp-content/thumbnails/uploads/2018/04/marche_livre_460-tt-width-460-height-260-fill-0-crop-0-bgcolor-eeeeee.png")
+          ->setLibrary($this->getReference("library_" . 1));
+
+      $this->addReference("book_" . $i, $book);
+      $manager->persist($book);
+  }
 
         foreach (self::BOOKS as $title => $data) {
             $book = new Book();

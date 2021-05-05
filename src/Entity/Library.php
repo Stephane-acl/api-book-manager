@@ -93,10 +93,22 @@ class Library
      */
     private $user;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Category::class, mappedBy="library")
+     */
+    private $categories;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Author::class, mappedBy="library")
+     */
+    private $authors;
+
     public function __construct()
     {
         $this->book = new ArrayCollection();
         $this->user = new ArrayCollection();
+        $this->categories = new ArrayCollection();
+        $this->authors = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -218,6 +230,66 @@ class Library
             // set the owning side to null (unless already changed)
             if ($user->getLibrary() === $this) {
                 $user->setLibrary(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Category[]
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+            $category->setLibrary($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        if ($this->categories->removeElement($category)) {
+            // set the owning side to null (unless already changed)
+            if ($category->getLibrary() === $this) {
+                $category->setLibrary(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Author[]
+     */
+    public function getAuthors(): Collection
+    {
+        return $this->authors;
+    }
+
+    public function addAuthor(Author $author): self
+    {
+        if (!$this->authors->contains($author)) {
+            $this->authors[] = $author;
+            $author->setLibrary($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAuthor(Author $author): self
+    {
+        if ($this->authors->removeElement($author)) {
+            // set the owning side to null (unless already changed)
+            if ($author->getLibrary() === $this) {
+                $author->setLibrary(null);
             }
         }
 

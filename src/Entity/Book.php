@@ -3,13 +3,17 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use App\Repository\BookRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=BookRepository::class)
@@ -17,8 +21,37 @@ use Symfony\Component\Validator\Constraints as Assert;
  *   attributes = {
  *       "order": {"createdAt":"desc"}
  *   },
+ *     iri="http://schema.org/Book",
+ *     normalizationContext={
+ *         "groups"={"media_book_read"}
+ *     },
  *
- *     collectionOperations={"GET", "POST"},
+ *     collectionOperations={
+ *         "POST"={
+ *             "controller"="App\Controller\CreateBookActionController",
+ *             "deserialize"=false,
+ *             "security"="is_granted('ROLE_USER')",
+ *             "validation_groups"={"Default", "media_book_create"},
+ *             "openapi_context"={
+ *                 "requestBody"={
+ *                     "content"={
+ *                         "multipart/form-data"={
+ *                             "schema"={
+ *                                 "type"="object",
+ *                                 "properties"={
+ *                                     "file"={
+ *                                         "type"="string",
+ *                                         "format"="binary"
+ *                                     }
+ *                                 }
+ *                             }
+ *                         }
+ *                     }
+ *                 }
+ *             }
+ *         },
+ *         "GET"
+ *     },
  *     itemOperations={
  *          "GET"={
  *              "method"="GET",
@@ -33,6 +66,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ApiFilter(SearchFilter::class, properties={"title":"partial", "isAvailable":"exact"})
  * @ApiFilter(OrderFilter::class)
+ * @Vich\Uploadable
  */
 class Book
 {
@@ -40,13 +74,13 @@ class Book
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_book", "get_books", "get_authors"})
+     * @Groups({"get_book", "get_books", "get_authors", "get_categories"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_book", "get_books", "get_authors", "get_libraries"})
+     * @Groups({"get_book", "get_books", "get_authors", "get_libraries", "get_categories"})
      * @Assert\Length(min=3, minMessage="Le titre doit avoir au minimum 3 caractères",
      *     max=255, maxMessage="Le titre doit avoir au maximum 255 caractères")
      * @Assert\NotBlank(message="Le titre du livre est obligatoire")
@@ -80,7 +114,7 @@ class Book
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_book", "get_books", "get_authors"})
+     * @Groups({"get_book", "get_books", "get_authors", "get_categories"})
      */
     private $image;
 
@@ -124,6 +158,29 @@ class Book
      * @Assert\NotBlank(message="A library is required")
      */
     private $library;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ApiProperty(iri="http://schema.org/contentUrl")
+     * @Groups({"media_book_read"})
+     */
+    public $contentUrl;
+
+    /**
+     * @var File|null
+     *
+     * @Groups({"media_book_create"})
+     * @Vich\UploadableField(mapping="media_book", fileNameProperty="filePath")
+     */
+    public $file;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_book", "get_books"})
+     */
+    private $filePath;
 
     public function getId(): ?int
     {
@@ -271,6 +328,44 @@ class Book
     {
         $this->library = $library;
 
+        return $this;
+    }
+
+    public function getContentUrl(): ?string
+    {
+        return $this->contentUrl;
+    }
+
+    public function setContentUrl(?string $contentUrl): self
+    {
+        $this->contentUrl = $contentUrl;
+
+        return $this;
+    }
+
+    public function getFilePath(): ?string
+    {
+        return $this->filePath;
+    }
+
+    public function setFilePath(?string $filePath): self
+    {
+        $this->filePath = $filePath;
+
+        return $this;
+    }
+
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function setFile(File $file = null): Book
+    {
+        $this->file = $file;
+        if ($file) {
+            $this->updatedAt = new DateTime('now');
+        }
         return $this;
     }
 }

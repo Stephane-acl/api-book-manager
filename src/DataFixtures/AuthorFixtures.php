@@ -16,7 +16,7 @@ class AuthorFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies(): array
     {
-        return [BookFixtures::class];
+        return [BookFixtures::class, LibraryFixtures::class];
     }
 
     const AUTHORS = [
@@ -45,20 +45,20 @@ class AuthorFixtures extends Fixture implements DependentFixtureInterface
 
         // Création des auteurs
 
-     //  $faker = Factory::create('fr_FR');
+        //  $faker = Factory::create('fr_FR');
 
-     //  for ($i = 0; $i < 95; $i++) {
-     //      $author = new Author();
-     //      $author
-     //          ->setFirstName($faker->firstName)
-     //          ->setLastName($faker->lastName)
-     //          ->setNationality('FR')
-     //          ->setDateOfBirth(new \DateTime('NOW'))
-     //          ->setCreatedAt(new \DateTime('NOW'))
-     //          ->addBook($this->getReference("book_" . $i));
-     //      $manager->persist($author);
-     //      $manager->persist($author);
-     //  }
+        //  for ($i = 0; $i < 95; $i++) {
+        //      $author = new Author();
+        //      $author
+        //          ->setFirstName($faker->firstName)
+        //          ->setLastName($faker->lastName)
+        //          ->setNationality('FR')
+        //          ->setDateOfBirth(new \DateTime('NOW'))
+        //          ->setCreatedAt(new \DateTime('NOW'))
+        //          ->addBook($this->getReference("book_" . $i));
+        //      $manager->persist($author);
+        //      $manager->persist($author);
+        //  }
 
         foreach (self::AUTHORS as $firstName => $data) {
             $author = new Author();
@@ -67,7 +67,8 @@ class AuthorFixtures extends Fixture implements DependentFixtureInterface
                 ->setLastName($data['lastName'])
                 ->setNationality($data['nationality'])
                 ->setDateOfBirth(new \DateTime('NOW'))
-                ->setCreatedAt(new \DateTime('NOW'));
+                ->setCreatedAt(new \DateTime('NOW'))
+                ->setLibrary($this->getReference("library_" . 1));
             foreach ($data['book'] as $book) {
                 $author->addBook($this->getReference($book));
             }
